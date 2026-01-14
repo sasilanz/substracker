@@ -1,0 +1,292 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #1e40af;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --dark: #1f2937;
+    --light: #f9fafb;
+    --gray: #6b7280;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: var(--light);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar h1 a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.navbar a:hover {
+    opacity: 0.8;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fecaca;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-small {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: var(--dark);
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.btn-small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+.btn-edit {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-delete {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* Stats */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Table */
+.subscriptions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.subscriptions-table thead {
+    background-color: var(--light);
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.subscriptions-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.subscriptions-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.subscriptions-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.subscriptions-table .actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Forms */
+.form {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+    color: var(--gray);
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar ul {
+        gap: 1rem;
+    }
+
+    .subscriptions-table {
+        font-size: 0.9rem;
+    }
+
+    .subscriptions-table th,
+    .subscriptions-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .subscriptions-table .actions {
+        flex-direction: column;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}

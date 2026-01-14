@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Substracker{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="stats">
+    <div class="stat-card">
+        <h3>Monatliches Budget</h3>
+        <p class="amount">{{ "%.2f"|format(total_monthly) }} €</p>
+    </div>
+    <div class="stat-card">
+        <h3>Jährliches Budget</h3>
+        <p class="amount">{{ "%.2f"|format(total_yearly) }} €</p>
+    </div>
+    <div class="stat-card">
+        <h3>Abos</h3>
+        <p class="amount">{{ subscriptions|length }}</p>
+    </div>
+</div>
+
+{% if subscriptions %}
+    <h3>Subscriptions (sortiert nach Fälligkeit)</h3>
+    <table class="subscriptions-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Betrag</th>
+                <th>Zyklus</th>
+                <th>Fällig am</th>
+                <th>Login</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sub in subscriptions %}
+                <tr>
+                    <td><strong>{{ sub.name }}</strong></td>
+                    <td>{{ "%.2f"|format(sub.amount) }} €</td>
+                    <td>
+                        {% if sub.cycle == 'monthly' %}
+                            Monatlich
+                        {% elif sub.cycle == 'yearly' %}
+                            Jährlich
+                        {% else %}
+                            {{ sub.cycle }}
+                        {% endif %}
+                    </td>
+                    <td>{{ sub.due_date.strftime('%d.%m.%Y') }}</td>
+                    <td>{{ sub.login or '-' }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('edit', id=sub.id) }}" class="btn-small btn-edit">✏️ Bearbeiten</a>
+                        <a href="{{ url_for('delete', id=sub.id) }}" class="btn-small btn-delete" onclick="return confirm('Wirklich löschen?')">🗑️ Löschen</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>Noch keine Subscriptions vorhanden.</p>
+        <a href="{{ url_for('add') }}" class="btn-primary">Erste Subscription hinzufügen</a>
+    </div>
+{% endif %}
+{% endblock %}
