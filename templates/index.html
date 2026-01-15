@@ -6,14 +6,16 @@
 <h2>Dashboard</h2>
 
 <div class="stats">
+    {% for currency, amounts in totals.items() %}
     <div class="stat-card">
-        <h3>Monatliches Budget</h3>
-        <p class="amount">{{ "%.2f"|format(total_monthly) }} €</p>
+        <h3>Monatlich ({{ currency }})</h3>
+        <p class="amount">{{ "%.2f"|format(amounts.monthly) }} {{ currency }}</p>
     </div>
     <div class="stat-card">
-        <h3>Jährliches Budget</h3>
-        <p class="amount">{{ "%.2f"|format(total_yearly) }} €</p>
+        <h3>Jährlich ({{ currency }})</h3>
+        <p class="amount">{{ "%.2f"|format(amounts.yearly) }} {{ currency }}</p>
     </div>
+    {% endfor %}
     <div class="stat-card">
         <h3>Abos</h3>
         <p class="amount">{{ subscriptions|length }}</p>
@@ -21,14 +23,15 @@
 </div>
 
 {% if subscriptions %}
-    <h3>Subscriptions (sortiert nach Fälligkeit)</h3>
+    <h3>Subscriptions</h3>
     <table class="subscriptions-table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Betrag</th>
                 <th>Zyklus</th>
-                <th>Fällig am</th>
+                <th>Kündigungsfrist</th>
+                <th>Vertragsende</th>
                 <th>Login</th>
                 <th>Aktionen</th>
             </tr>
@@ -36,18 +39,44 @@
         <tbody>
             {% for sub in subscriptions %}
                 <tr>
-                    <td><strong>{{ sub.name }}</strong></td>
-                    <td>{{ "%.2f"|format(sub.amount) }} €</td>
+                    <td>
+                        <strong>{{ sub.name }}</strong>
+                        {% if sub.website %}
+                        <br><a href="{{ sub.website }}" target="_blank" class="website-link">🌐 {{ sub.website }}</a>
+                        {% endif %}
+                    </td>
+                    <td>{{ "%.2f"|format(sub.amount) }} {{ sub.currency }}</td>
                     <td>
                         {% if sub.cycle == 'monthly' %}
-                            Monatlich
+                            Monatlich{% if sub.payment_day %} ({{ sub.payment_day }}.){% endif %}
+                        {% elif sub.cycle == 'quarterly' %}
+                            Vierteljährlich
+                        {% elif sub.cycle == 'semi-annually' %}
+                            Halbjährlich
                         {% elif sub.cycle == 'yearly' %}
                             Jährlich
                         {% else %}
                             {{ sub.cycle }}
                         {% endif %}
                     </td>
-                    <td>{{ sub.due_date.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        {% if sub.cancellation_period == 'anytime' %}
+                            Jederzeit
+                        {% elif sub.cancellation_period == '1_month' %}
+                            1 Monat
+                        {% elif sub.cancellation_period == '2_months' %}
+                            2 Monate
+                        {% elif sub.cancellation_period == '3_months' %}
+                            3 Monate
+                        {% elif sub.cancellation_period == '6_months' %}
+                            6 Monate
+                        {% elif sub.cancellation_period == '12_months' %}
+                            12 Monate
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{% if sub.contract_end %}{{ sub.contract_end.strftime('%d.%m.%Y') }}{% else %}-{% endif %}</td>
                     <td>{{ sub.login or '-' }}</td>
                     <td class="actions">
                         <a href="{{ url_for('edit', id=sub.id) }}" class="btn-small btn-edit">✏️ Bearbeiten</a>

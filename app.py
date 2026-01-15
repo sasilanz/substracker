@@ -20,30 +20,50 @@ def create_tables():
 
 @app.route('/')
 def index():
-    """Dashboard mit allen Subscriptions, sortiert nach Fälligkeitsdatum"""
-    subscriptions = Subscription.query.order_by(Subscription.due_date).all()
+    """Dashboard mit allen Subscriptions, sortiert nach Vertragsende"""
+    subscriptions = Subscription.query.order_by(Subscription.contract_end.asc().nullslast(), Subscription.name).all()
     
-    # Berechne Gesamtbudget und nächste Zahlungen
-    total_monthly = sum(s.amount for s in subscriptions if s.cycle == 'monthly')
-    total_yearly = sum(s.amount for s in subscriptions if s.cycle == 'yearly')
+    # Berechne Gesamtbudget nach Währung gruppiert
+    totals = {}
+    for sub in subscriptions:
+        currency = sub.currency
+        if currency not in totals:
+            totals[currency] = {'monthly': 0, 'yearly': 0}
+        
+        if sub.cycle == 'monthly':
+            totals[currency]['monthly'] += sub.amount
+            totals[currency]['yearly'] += sub.amount * 12
+        elif sub.cycle == 'quarterly':
+            totals[currency]['monthly'] += sub.amount / 3
+            totals[currency]['yearly'] += sub.amount * 4
+        elif sub.cycle == 'semi-annually':
+            totals[currency]['monthly'] += sub.amount / 6
+            totals[currency]['yearly'] += sub.amount * 2
+        elif sub.cycle == 'yearly':
+            totals[currency]['monthly'] += sub.amount / 12
+            totals[currency]['yearly'] += sub.amount
     
     return render_template('index.html', 
                          subscriptions=subscriptions,
-                         total_monthly=total_monthly,
-                         total_yearly=total_yearly)
+                         totals=totals)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     """Neue Subscription hinzufügen"""
     if request.method == 'POST':
         try:
+            payment_day = request.form.get('payment_day')
+            contract_end = request.form.get('contract_end')
             subscription = Subscription(
                 name=request.form['name'],
                 amount=float(request.form['amount']),
+                currency=request.form.get('currency', 'CHF'),
                 cycle=request.form['cycle'],
-                due_date=datetime.strptime(request.form['due_date'], '%Y-%m-%d').date(),
+                payment_day=int(payment_day) if payment_day else None,
+                cancellation_period=request.form.get('cancellation_period', ''),
+                contract_end=datetime.strptime(contract_end, '%Y-%m-%d').date() if contract_end else None,
+                website=request.form.get('website', ''),
                 login=request.form.get('login', ''),
-                password=request.form.get('password', ''),
                 notes=request.form.get('notes', '')
             )
             db.session.add(subscription)
@@ -62,12 +82,17 @@ def edit(id):
     
     if request.method == 'POST':
         try:
+            payment_day = request.form.get('payment_day')
+            contract_end = request.form.get('contract_end')
             subscription.name = request.form['name']
             subscription.amount = float(request.form['amount'])
+            subscription.currency = request.form.get('currency', 'CHF')
             subscription.cycle = request.form['cycle']
-            subscription.due_date = datetime.strptime(request.form['due_date'], '%Y-%m-%d').date()
+            subscription.payment_day = int(payment_day) if payment_day else None
+            subscription.cancellation_period = request.form.get('cancellation_period', '')
+            subscription.contract_end = datetime.strptime(contract_end, '%Y-%m-%d').date() if contract_end else None
+            subscription.website = request.form.get('website', '')
             subscription.login = request.form.get('login', '')
-            subscription.password = request.form.get('password', '')
             subscription.notes = request.form.get('notes', '')
             
             db.session.commit()

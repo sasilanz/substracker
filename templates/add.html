@@ -12,32 +12,63 @@
     </div>
 
     <div class="form-group">
-        <label for="amount">Betrag (€) *</label>
+        <label for="amount">Betrag *</label>
         <input type="number" id="amount" name="amount" step="0.01" required placeholder="z.B. 12.99">
+    </div>
+
+    <div class="form-group">
+        <label for="currency">Währung *</label>
+        <select id="currency" name="currency" required>
+            <option value="CHF" selected>CHF</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label for="cycle">Zyklus *</label>
         <select id="cycle" name="cycle" required>
             <option value="monthly">Monatlich</option>
+            <option value="quarterly">Vierteljährlich</option>
+            <option value="semi-annually">Halbjährlich</option>
             <option value="yearly">Jährlich</option>
-            <option value="quarterly">Quartalsweise</option>
+        </select>
+    </div>
+
+    <div class="form-group" id="payment_day_group" style="display: none;">
+        <label for="payment_day">Zahlungstag (1-31)</label>
+        <input type="number" id="payment_day" name="payment_day" min="1" max="31" placeholder="z.B. 15 für den 15. des Monats">
+        <small>Wird automatisch für monatliche Zahlungen verwendet</small>
+    </div>
+
+    <div class="form-group">
+        <label for="cancellation_period">Kündigungsfrist</label>
+        <select id="cancellation_period" name="cancellation_period">
+            <option value="">Keine Angabe</option>
+            <option value="anytime">Jederzeit kündbar</option>
+            <option value="1_month">1 Monat</option>
+            <option value="2_months">2 Monate</option>
+            <option value="3_months">3 Monate</option>
+            <option value="6_months">6 Monate</option>
+            <option value="12_months">12 Monate</option>
         </select>
     </div>
 
     <div class="form-group">
-        <label for="due_date">Fälligkeitsdatum *</label>
-        <input type="date" id="due_date" name="due_date" required>
+        <label for="contract_end">Vertragsende (optional)</label>
+        <input type="date" id="contract_end" name="contract_end">
+        <small>Nur bei befristeten Verträgen ausfüllen</small>
+    </div>
+
+    <div class="form-group">
+        <label for="website">Webseite/Login-URL</label>
+        <input type="url" id="website" name="website" placeholder="https://www.beispiel.com/login">
     </div>
 
     <div class="form-group">
         <label for="login">Login/E-Mail</label>
         <input type="text" id="login" name="login" placeholder="z.B. deine@email.com">
-    </div>
-
-    <div class="form-group">
-        <label for="password">Passwort</label>
-        <input type="password" id="password" name="password" placeholder="Passwort (verschlüsselt speichern wäre besser!)">
+        <small>Passwort wird nicht gespeichert - verwende deinen Password Manager</small>
     </div>
 
     <div class="form-group">
@@ -50,4 +81,16 @@
         <a href="{{ url_for('index') }}" class="btn-secondary">Abbrechen</a>
     </div>
 </form>
+
+<script>
+// Zeige payment_day Feld nur bei monatlichem Zyklus
+document.getElementById('cycle').addEventListener('change', function() {
+    const paymentDayGroup = document.getElementById('payment_day_group');
+    if (this.value === 'monthly') {
+        paymentDayGroup.style.display = 'block';
+    } else {
+        paymentDayGroup.style.display = 'none';
+    }
+});
+</script>
 {% endblock %}

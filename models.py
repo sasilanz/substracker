@@ -8,10 +8,13 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    cycle = db.Column(db.String(20), nullable=False)  # 'monthly', 'yearly', 'quarterly'
-    due_date = db.Column(db.Date, nullable=False)  # Nächstes Fälligkeitsdatum
+    currency = db.Column(db.String(3), nullable=False, default='CHF')  # CHF, EUR, USD, etc.
+    cycle = db.Column(db.String(20), nullable=False)  # 'monthly', 'quarterly', 'semi-annually', 'yearly'
+    payment_day = db.Column(db.Integer)  # Tag im Monat (1-31) für monatliche Zahlungen
+    cancellation_period = db.Column(db.String(50))  # Kündigungsfrist (z.B. 'anytime', '1_month', '3_months')
+    contract_end = db.Column(db.Date)  # Vertragsende (optional, nur bei befristeten Verträgen)
+    website = db.Column(db.String(500))  # URL zur Login-Seite
     login = db.Column(db.String(255))
-    password = db.Column(db.String(255))
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
