@@ -42,6 +42,9 @@ def index():
         elif sub.cycle == 'yearly':
             totals[currency]['monthly'] += sub.amount / 12
             totals[currency]['yearly'] += sub.amount
+        elif sub.cycle == 'biennial':
+            totals[currency]['monthly'] += sub.amount / 24
+            totals[currency]['yearly'] += sub.amount / 2
     
     return render_template('index.html', 
                          subscriptions=subscriptions,

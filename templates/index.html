@@ -55,6 +55,8 @@
                             Halbjährlich
                         {% elif sub.cycle == 'yearly' %}
                             Jährlich
+                        {% elif sub.cycle == 'biennial' %}
+                            2-jährlich
                         {% else %}
                             {{ sub.cycle }}
                         {% endif %}
